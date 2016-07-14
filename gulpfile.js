@@ -1,6 +1,8 @@
 const gulp = require('gulp');
 const concat = require('gulp-concat');
-const bemhtml = require('gulp-bem-xjst').bemhtml;
+const bemxjst = require('gulp-bem-xjst');
+const bemhtml = bemxjst.bemhtml;
+const bemtree = bemxjst.bemtree;
 const path = require('path');
 const thru = require('through2');
 const gulpEval = require('gulp-eval');
@@ -15,14 +17,22 @@ gulp.task('bemhtml', function() {
 	.pipe(gulp.dest('temp')); // Сохраняем в dist
 });
 
-gulp.task('html', ['bemhtml'], function() {
+gulp.task('bemtree', function() {
+  return gulp.src('*.blocks/**/*.bemtree.js') // Собираем все шаблоны без учета порядка
+	.pipe(concat('all.js')) // Склеиваем в один файл
+	.pipe(bemtree()) // Компилируем и добавляем ядро
+	.pipe(gulp.dest('temp')); // Сохраняем в dist
+});
+
+gulp.task('html', function() {
 	const BEMHTML = require('./temp/all.bemhtml.js');
+	const BEMTREE = require('./temp/all.bemtree.js');
   	return gulp.src('desktop.bundles/**/*.bemjson.js') // Собираем все bemjson файлы страниц
   	.pipe(gulpEval())
   	.pipe(thru.obj(function(file, enc, cb) {
 	 	// Применяем шаблоны и переименовываем в html
 		try {
-	  		file.contents = new Buffer(BEMHTML.apply(file.data));
+	  		file.contents = new Buffer(BEMHTML.apply(BEMTREE.apply(file.data)));
 		} catch (e) {
 			// Сохраняем ошибку, чтобы проще было отлаживать
 			console.error(e);
@@ -36,4 +46,4 @@ gulp.task('html', ['bemhtml'], function() {
 });
 
 
-gulp.task('default', ['bemhtml', 'html']);
+gulp.task('default', ['bemhtml', 'bemtree', 'html']);

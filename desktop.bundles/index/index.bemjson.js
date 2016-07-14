@@ -8,44 +8,8 @@
             block: 'header',
             content: [
                 {
-                    block: 'logo',
-                    content: {
-                        block: 'link',
-                        /**
-                         * Условная логика
-                         */
-                        content: (function() {
-                            var res = ['Hello '];
-
-                            if (Math.random() > 0.5) {
-                                res.push('BEM');
-                            } else {
-                                res.push('world');
-                            }
-
-                            return res;
-                        }())
-                    }
-                },
-                {
                     block: 'menu',
-                    content: [
-                        { 	
-                        	url: false, 
-                        	content: 'О методологии' 
-                        },
-                        { 
-                        	url: 'about.html', 
-                        	content: 'Узнать больше' 
-                        },
-                        { 
-                        	url: 'http://bem.info', 
-                        	attrs: { 
-                        		target: '_blank' 
-                        	}, 
-                        	content: 'bem.info' 
-                        }
-                    ]
+                    active: 'index',
                 }
             ]
         },
@@ -56,14 +20,6 @@
         {
             block: 'footer',
             content: [
-                {
-                    block: 'logo',
-                    content: {
-                        block: 'link',
-                        url: 'index.html',
-                        content: 'Полный БЭМ'
-                    }
-                }
             ]
         }
     ]
